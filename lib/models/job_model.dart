@@ -1,4 +1,6 @@
-class ComModel {
+import 'package:hire_up_poc_1/main.dart';
+
+class JobModel {
   final int id;
   final String companyName;
   final String companyLogo;
@@ -11,7 +13,7 @@ class ComModel {
   final int viewCount;
   final DateTime createdAt;
 
-  ComModel({
+  JobModel({
     required this.id,
     required this.companyName,
     required this.companyLogo,
@@ -25,7 +27,7 @@ class ComModel {
     required this.createdAt,
   });
 
-  factory ComModel.fromJson(Map json) => ComModel(
+  factory JobModel.fromJson(Map json) => JobModel(
     id: json['id'],
     companyName: json['companyName'],
     companyLogo: json['companyLogo'],

@@ -86,6 +86,29 @@ enum AppImg {
       Image.asset('assets/images/$p', fit: .fitWidth, width: size);
 }
 
+enum CateGory {
+  who(label: '전체', value: 'HR'),
+  dev(label: '개발', value: 'DEV'),
+  des(label: '디자인', value: 'DESIGN'),
+  mct(label: '마케팅', value: 'MARKETING');
+
+  final String label;
+  final String value;
+
+  const CateGory({required this.label, required this.value});
+}
+
+enum Sort {
+  latest(label: '최신순', value: 'latest'),
+  popular(label: '인기순', value: 'popular'),
+  salary(label: '급여순', value: 'salary');
+
+  final String label;
+  final String value;
+
+  const Sort({required this.label, required this.value});
+}
+
 extension QT on TextStyle {
   TextStyle get b24 => copyWith(fontWeight: .bold, fontSize: 24);
 
@@ -99,16 +122,21 @@ extension QT on TextStyle {
 
   TextStyle get cb => copyWith(color: blue);
 
-  TextStyle get cg => copyWith(color: tGrey);
+  TextStyle get cg => copyWith(color: grey);
 }
 
-extension QN on Navigator {
-  NavigatorState go(BuildContext context, Widget page) =>
-      Navigator.of(context)
-        ..push(MaterialPageRoute(builder: (context) => page));
+extension QC on BuildContext {
+  NavigatorState go(Widget page) =>
+      Navigator.of(this)..push(MaterialPageRoute(builder: (context) => page));
 }
 
 extension QS on String {
   void snack(BuildContext context) =>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(this)));
+}
+
+extension QD on num {
+  SizedBox get wW => SizedBox(width: toDouble());
+
+  SizedBox get hW => SizedBox(height: toDouble());
 }

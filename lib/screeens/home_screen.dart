@@ -1,37 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hire_up_poc_1/controllers/app_ctrl.dart';
 import 'package:hire_up_poc_1/main.dart';
-import 'package:hire_up_poc_1/models/com_model.dart';
+import 'package:hire_up_poc_1/models/job_model.dart';
+import 'package:hire_up_poc_1/screeens/job_book_screen.dart';
 import 'package:hire_up_poc_1/screeens/search_screen.dart';
 import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
-import 'package:hire_up_poc_1/widgets/com_card.dart';
+import 'package:hire_up_poc_1/widgets/job_card.dart';
 import 'package:hire_up_poc_1/widgets/search_field.dart';
-import 'package:http/http.dart';
 
 import '../widgets/utils.dart';
-
-enum CateGory {
-  who('전체'),
-  dev('개발'),
-  des('디자인'),
-  mct('마케팅');
-
-  final String v;
-
-  const CateGory(this.v);
-}
-
-enum Filter {
-  latest('최신순'),
-  popular('인기순'),
-  salary('급여순');
-
-  final String v;
-
-  const Filter(this.v);
-}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -49,9 +26,12 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: .spaceBetween,
                 children: [
                   AppImg.app_icon.image(size: 100),
-                  GestureDetector(onTap: () {
-                    
-                  }, child: AppIcon.bookmark.icon(size: 30)),
+                  GestureDetector(
+                    onTap: () {
+                      context.go(JobBookScreen());
+                    },
+                    child: AppIcon.bookmark.icon(size: 30),
+                  ),
                 ],
               ),
             ),
@@ -63,7 +43,10 @@ class HomeScreen extends StatelessWidget {
                   Row(
                     children: [
                       Text('안녕하세요, ', style: TextStyle().b14),
-                      Text('${appCtrl.name}님!', style: TextStyle().b14.cb),
+                      Text(
+                        '${appCtrl.user?.name ?? '게스트'}님!',
+                        style: TextStyle().b14.cb,
+                      ),
                     ],
                   ),
                   Row(
@@ -78,19 +61,16 @@ class HomeScreen extends StatelessWidget {
 
             GestureDetector(
               onTap: () {
-                Navigator().go(context, SearchScreen());
+                context.go(SearchScreen());
               },
               child: SearchField(
                 enable: false,
                 h: '직무, 회사, 키워드 검색',
-                p: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: AppIcon.search.icon(color: Colors.grey),
-                ),
+                p: AppIcon.search.icon(color: Colors.grey),
               ),
             ),
 
-            _Body(),
+            Expanded(child: _Body()),
           ],
         ),
       ),
@@ -106,26 +86,41 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  Filter filter = .latest;
-  CateGory cate = .who;
+  ValueNotifier<Sort> sort = ValueNotifier(.latest);
+  ValueNotifier<CateGory> category = ValueNotifier(.who);
+  final ValueNotifier<bool> loading = ValueNotifier(false);
 
-  final ValueNotifier<List<ComModel>> comList = ValueNotifier([]);
+  final ValueNotifier<List<JobModel>> jobList = ValueNotifier([]);
 
   @override
   void initState() {
+    sort.addListener(() async {
+      loading.value = true;
+      jobList.value = await appCtrl.loadJobList(context, sort: sort.value);
+      loading.value = false;
+      setState(() {});
+    });
+    category.addListener(() async {
+      loading.value = true;
+      jobList.value = await appCtrl.loadJobList(context, cate: category.value);
+      loading.value = false;
+      setState(() {});
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      try {
-        final res = await get(Uri.parse('$baseUrl/jobs?sort=${filter.name}'));
-        final data = jsonDecode(res.body);
-        comList.value.addAll(
-          (data['items'] as List).map((e) => ComModel.fromJson(e)),
-        );
-      } catch (e) {
-        '조회 통신 오류'.snack(context);
-      }
+      jobList.value = await appCtrl.loadJobList(context);
+      setState(() {});
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    sort.dispose();
+    category.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -133,13 +128,21 @@ class _BodyState extends State<_Body> {
     return Column(
       children: [
         Padding(padding: .symmetric(vertical: 18), child: tags()),
+        line(),
 
-        top(),
-        SingleChildScrollView(
+        24.hW,
+
+        Expanded(
           child: ValueListenableBuilder(
-            valueListenable: comList,
+            valueListenable: loading,
             builder: (context, value, child) =>
-                Column(children: value.map((e) => ComCard(model: e)).toList()),
+                value ? Center(child: CircularProgressIndicator()) : child!,
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 18,
+                children: jobList.value.map((e) => JobCard(model: e)).toList(),
+              ),
+            ),
           ),
         ),
       ],
@@ -155,15 +158,15 @@ class _BodyState extends State<_Body> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: e == cate ? Colors.white : tGrey,
-                  backgroundColor: e == cate ? blue : Colors.white,
+                  foregroundColor: e == category.value ? Colors.white : grey,
+                  backgroundColor: e == category.value ? blue : Colors.white,
                 ),
                 onPressed: () {
                   setState(() {
-                    cate = e;
+                    category.value = e;
                   });
                 },
-                child: Text(e.v, style: TextStyle().b14),
+                child: Text(e.label, style: TextStyle().b14),
               ),
             ),
           )
@@ -171,28 +174,28 @@ class _BodyState extends State<_Body> {
     ),
   );
 
-  Widget top() => Row(
+  Widget line() => Row(
     mainAxisAlignment: .spaceBetween,
     children: [
       Text('전체 공고', style: TextStyle().b18),
       PopupMenuButton(
         onSelected: (value) {
           setState(() {
-            filter = value;
+            sort.value = value;
           });
         },
-        itemBuilder: (context) => Filter.values
+        itemBuilder: (context) => Sort.values
             .map(
               (e) => PopupMenuItem(
                 value: e,
-                child: Text(e.v, style: TextStyle().b16),
+                child: Text(e.label, style: TextStyle().b16),
               ),
             )
             .toList(),
         child: Row(
           children: [
-            Text(filter.v, style: TextStyle().b14.cg),
-            Icon(Icons.keyboard_arrow_down_outlined, color: tGrey),
+            Text(sort.value.label, style: TextStyle().b14.cg),
+            Icon(Icons.keyboard_arrow_down_outlined, color: grey),
           ],
         ),
       ),

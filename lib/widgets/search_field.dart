@@ -9,6 +9,8 @@ class SearchField extends StatelessWidget {
     this.s,
     this.controller,
     this.enable,
+    this.color,
+    this.hide,
   });
 
   final String h;
@@ -16,12 +18,14 @@ class SearchField extends StatelessWidget {
   final Widget? s;
   final TextEditingController? controller;
   final bool? enable;
+  final Color? color;
+  final bool? hide;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: color ?? Colors.white,
         boxShadow: [
           BoxShadow(color: Colors.black.withAlpha(100), blurRadius: 2),
         ],
@@ -34,8 +38,19 @@ class SearchField extends StatelessWidget {
           border: .none,
           hintText: h,
           hintStyle: TextStyle().b14.cg,
-          prefixIcon: p,
-          suffixIcon: s,
+          prefixIcon: p != null
+              ? Padding(padding: const EdgeInsets.all(12.0), child: p)
+              : null,
+          suffixIcon: s != null
+              ? Padding(padding: const EdgeInsets.all(12.0), child: s)
+              : hide != null
+              ? GestureDetector(
+                  onTap: () {},
+                  child: hide!
+                      ? AppIcon.visibility.icon()
+                      : AppIcon.visibilityOff.icon(),
+                )
+              : null,
         ),
       ),
     );
