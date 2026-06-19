@@ -49,7 +49,7 @@ class _JobBookScreenState extends State<JobBookScreen> {
                     return Column(
                       mainAxisAlignment: .center,
                       children: [
-                        AppIcon.bookmark.icon(size: 58, color: grey),
+                        Icons.lock_outline.icon(size: 58, color: grey),
                         8.ph(Text('로그인이 필요합니다', style: TextStyle().b16)),
                         Text(
                           '로그인 후 관심 공고를 확인할 수 있어요',
@@ -100,7 +100,10 @@ class _BodyState extends State<_Body> {
                 ? Column(
                     mainAxisAlignment: .center,
                     children: [
-                      AppIcon.bookmark.icon(size: 58, color: grey),
+                      Icons.bookmark_border_outlined.icon(
+                        size: 58,
+                        color: grey,
+                      ),
                       8.ph(Text('관심 공고가 없습니다', style: TextStyle().b16.cg)),
                       Text('관심 있는 공고를 추가해 보세요', style: TextStyle().b14.cg),
                     ],

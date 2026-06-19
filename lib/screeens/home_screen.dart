@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         context.go(JobBookScreen());
                       },
-                      child: AppIcon.bookmark.icon(size: 30),
+                      child: Icons.bookmark_border_outlined.icon(size: 30),
                     ),
                   ],
                 ),
@@ -67,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                 child: SearchField(
                   enable: false,
                   h: '직무, 회사, 키워드 검색',
-                  p: AppIcon.search.icon(color: Colors.grey),
+                  p: Icons.search.icon(color: Colors.grey),
                 ),
               ),
 

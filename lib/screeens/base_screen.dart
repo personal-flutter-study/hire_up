@@ -33,19 +33,21 @@ class _BaseScreenState extends State<BaseScreen> {
         items: [
           BottomNavigationBarItem(
             label: '홈',
-            icon: AppIcon.home.icon(color: page == 0 ? blue : grey),
+            icon: Icons.home.icon(color: page == 0 ? blue : grey),
           ),
           BottomNavigationBarItem(
             label: 'AI 면접',
-            icon: AppIcon.mic.icon(color: page == 1 ? blue : grey),
+            icon: Icons.mic.icon(color: page == 1 ? blue : grey),
           ),
           BottomNavigationBarItem(
             label: '이력서',
-            icon: AppIcon.resume.icon(color: page == 2 ? blue : grey),
+            icon: 'assets/icons/resume.svg'.icon(
+              color: page == 2 ? blue : grey,
+            ),
           ),
           BottomNavigationBarItem(
             label: '프로필',
-            icon: AppIcon.person.icon(color: page == 3 ? blue : grey),
+            icon: Icons.person.icon(color: page == 3 ? blue : grey),
           ),
         ],
       ),

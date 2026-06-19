@@ -76,7 +76,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                 h: '이메일을 입력해주세요',
                 controller: email,
                 color: Colors.white.withAlpha(200),
-                p: AppIcon.email.icon(color: grey),
+                p: Icons.email_outlined.icon(color: grey),
               ),
               18.sh,
               SearchField(
@@ -84,7 +84,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                 controller: password,
                 hide: true,
                 color: Colors.white.withAlpha(200),
-                p: AppIcon.lock.icon(color: grey),
+                p: Icons.lock_outline.icon(color: grey),
               ),
 
               Padding(

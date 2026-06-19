@@ -128,7 +128,7 @@ class _SearchBarState extends State<_SearchBar> {
                 _controller.onSubmit();
               },
               controller: _controller.keyword,
-              p: AppIcon.search.icon(color: grey),
+              p: Icons.search.icon(color: grey),
               h: '직무, 회사, 키워드 검색',
               s: _controller.keyword.text.isNotEmpty
                   ? IconButton(
@@ -166,7 +166,7 @@ class _ResultBody extends StatelessWidget {
           return Column(
             mainAxisAlignment: .center,
             children: [
-              AppIcon.search.icon(size: 58, color: grey),
+              Icons.search.icon(size: 58, color: grey),
               18.ph(Text('검색 결과가 없습니다', style: TextStyle().b16.cg)),
               Text('다른 키워드로 검색해보세요', style: TextStyle().b14.cg),
             ],

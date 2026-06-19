@@ -102,8 +102,8 @@ class _SearchFieldState extends State<SearchField> {
                           });
                         },
                         child: hide
-                            ? AppIcon.visibility.icon(color: grey)
-                            : AppIcon.visibilityOff.icon(color: grey),
+                            ? Icons.visibility.icon(color: grey)
+                            : Icons.visibility_off.icon(color: grey),
                       ),
                     )
                   : null,

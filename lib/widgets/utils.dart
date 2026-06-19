@@ -28,43 +28,6 @@ enum ComImg {
       Image.asset('assets/images/company/$p', fit: .fitWidth, width: size);
 }
 
-enum AppIcon {
-  back('back.svg'),
-  bookmark('bookmark.svg'),
-  check('check.svg'),
-  chevron('chevron-right.svg'),
-  delete('delete.svg'),
-  edit('edit.svg'),
-  email('email.svg'),
-  filter('filter.svg'),
-  heart('heart.svg'),
-  home('home.svg'),
-  interview('interview.svg'),
-  lock('lock.svg'),
-  mic('mic.svg'),
-  notification('notification.svg'),
-  person('person.svg'),
-  profile('profile.svg'),
-  resume('resume.svg'),
-  search('search.svg'),
-  share('share.svg'),
-  sound('sound-wave.svg'),
-  stop('stop.svg'),
-  visibility('visibility.svg'),
-  visibilityOff('visibility-off.svg');
-
-  final String p;
-
-  const AppIcon(this.p);
-
-  Widget icon({double size = 24, Color? color}) => SvgPicture.asset(
-    'assets/icons/$p',
-    fit: .fitWidth,
-    width: size,
-    color: color ?? grey,
-  );
-}
-
 enum AppImg {
   ai_interviewer('ai_interviewer.png'),
   app_icon('app_icon.png'),
@@ -149,6 +112,12 @@ extension QS on String {
   );
 
   Widget text(TextStyle style) => Text(this);
+
+  SvgPicture icon({Color? color, double? size}) =>
+      SvgPicture.asset(this, color: color, fit: .fitWidth, width: size);
+
+  Image image({Color? color, double? size}) =>
+      Image.asset(this, color: color, fit: .fitWidth, width: size);
 }
 
 extension QN on num {
@@ -167,6 +136,11 @@ extension QN on num {
   );
 
   Padding pa(Widget child) => Padding(padding: .all(toDouble()), child: child);
+}
+
+extension QI on IconData {
+  Icon icon({Color? color, double? size}) =>
+      Icon(this, color: color, size: size);
 }
 
 class AppButton {
