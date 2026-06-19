@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hire_up_poc_1/controllers/app_ctrl.dart';
 import 'package:hire_up_poc_1/main.dart';
-import 'package:hire_up_poc_1/models/job_model.dart';
 import 'package:hire_up_poc_1/screeens/job_book_screen.dart';
 import 'package:hire_up_poc_1/screeens/search_screen.dart';
 import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
@@ -18,60 +17,63 @@ class HomeScreen extends StatelessWidget {
     return BaseScaffold(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18.0),
-              child: Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  AppImg.app_icon.image(size: 100),
-                  GestureDetector(
-                    onTap: () {
-                      context.go(JobBookScreen());
-                    },
-                    child: AppIcon.bookmark.icon(size: 30),
-                  ),
-                ],
+        child: ValueListenableBuilder(
+          valueListenable: appCtrl.user,
+          builder: (context, value, child) => Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18.0),
+                child: Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    AppImg.app_icon.image(size: 100),
+                    GestureDetector(
+                      onTap: () {
+                        context.go(JobBookScreen());
+                      },
+                      child: AppIcon.bookmark.icon(size: 30),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            Padding(
-              padding: .symmetric(vertical: 18),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text('안녕하세요, ', style: TextStyle().b14),
-                      Text(
-                        '${appCtrl.user?.name ?? '게스트'}님!',
-                        style: TextStyle().b14.cb,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('새로운 기회', style: TextStyle().b18.cb),
-                      Text('를 찾아보세요.', style: TextStyle().b18),
-                    ],
-                  ),
-                ],
+              Padding(
+                padding: .symmetric(vertical: 18),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('안녕하세요, ', style: TextStyle().b14),
+                        Text(
+                          '${value?.name ?? '게스트'}님!',
+                          style: TextStyle().b14.cb,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('새로운 기회', style: TextStyle().b18.cb),
+                        Text('를 찾아보세요.', style: TextStyle().b18),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            GestureDetector(
-              onTap: () {
-                context.go(SearchScreen());
-              },
-              child: SearchField(
-                enable: false,
-                h: '직무, 회사, 키워드 검색',
-                p: AppIcon.search.icon(color: Colors.grey),
+              GestureDetector(
+                onTap: () {
+                  context.go(SearchScreen());
+                },
+                child: SearchField(
+                  enable: false,
+                  h: '직무, 회사, 키워드 검색',
+                  p: AppIcon.search.icon(color: Colors.grey),
+                ),
               ),
-            ),
 
-            Expanded(child: _Body()),
-          ],
+              Expanded(child: _Body()),
+            ],
+          ),
         ),
       ),
     );
@@ -79,49 +81,13 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _Body extends StatefulWidget {
-  const _Body({super.key});
-
   @override
   State<_Body> createState() => _BodyState();
 }
 
 class _BodyState extends State<_Body> {
-  ValueNotifier<Sort> sort = ValueNotifier(.latest);
-  ValueNotifier<CateGory> category = ValueNotifier(.who);
-  final ValueNotifier<bool> loading = ValueNotifier(false);
-
-  final ValueNotifier<List<JobModel>> jobList = ValueNotifier([]);
-
-  @override
-  void initState() {
-    sort.addListener(() async {
-      loading.value = true;
-      jobList.value = await appCtrl.loadJobList(context, sort: sort.value);
-      loading.value = false;
-      setState(() {});
-    });
-    category.addListener(() async {
-      loading.value = true;
-      jobList.value = await appCtrl.loadJobList(context, cate: category.value);
-      loading.value = false;
-      setState(() {});
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      jobList.value = await appCtrl.loadJobList(context);
-      setState(() {});
-    });
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    sort.dispose();
-    category.dispose();
-
-    super.dispose();
-  }
+  Sort sort = .latest;
+  CateGory category = .who;
 
   @override
   Widget build(BuildContext context) {
@@ -130,19 +96,24 @@ class _BodyState extends State<_Body> {
         Padding(padding: .symmetric(vertical: 18), child: tags()),
         line(),
 
-        24.hW,
+        24.sh,
 
         Expanded(
-          child: ValueListenableBuilder(
-            valueListenable: loading,
-            builder: (context, value, child) =>
-                value ? Center(child: CircularProgressIndicator()) : child!,
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: 18,
-                children: jobList.value.map((e) => JobCard(model: e)).toList(),
-              ),
-            ),
+          child: FutureBuilder(
+            future: appCtrl.loadJobList(context, sort: sort, cate: category),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == .waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return SingleChildScrollView(
+                child: Column(
+                  spacing: 18,
+                  children: (snapshot.data ?? [])
+                      .map((e) => JobCard(model: e))
+                      .toList(),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -158,12 +129,12 @@ class _BodyState extends State<_Body> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: e == category.value ? Colors.white : grey,
-                  backgroundColor: e == category.value ? blue : Colors.white,
+                  foregroundColor: e == category ? Colors.white : grey,
+                  backgroundColor: e == category ? blue : Colors.white,
                 ),
                 onPressed: () {
                   setState(() {
-                    category.value = e;
+                    category = e;
                   });
                 },
                 child: Text(e.label, style: TextStyle().b14),
@@ -181,7 +152,7 @@ class _BodyState extends State<_Body> {
       PopupMenuButton(
         onSelected: (value) {
           setState(() {
-            sort.value = value;
+            sort = value;
           });
         },
         itemBuilder: (context) => Sort.values
@@ -194,7 +165,7 @@ class _BodyState extends State<_Body> {
             .toList(),
         child: Row(
           children: [
-            Text(sort.value.label, style: TextStyle().b14.cg),
+            Text(sort.label, style: TextStyle().b14.cg),
             Icon(Icons.keyboard_arrow_down_outlined, color: grey),
           ],
         ),

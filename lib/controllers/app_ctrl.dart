@@ -1,17 +1,40 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hire_up_poc_1/main.dart';
 import 'package:hire_up_poc_1/models/job_model.dart';
 import 'package:hire_up_poc_1/models/user_model.dart';
-import 'package:hire_up_poc_1/screeens/home_screen.dart';
 import 'package:hire_up_poc_1/widgets/utils.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final appCtrl = AppCtrl();
 
 class AppCtrl {
-  UserModel? user;
+  late final ValueNotifier<UserModel?> user = ValueNotifier(null)
+    ..addListener(() {
+      if (user.value != null) {
+        signIn = true;
+      }
+    });
+
+  bool signIn = false;
+
+  static const String tokenKey = '_tokenKey';
+  static const String _bookmarksKey = '_bookmarksKey';
+
+  final ValueNotifier<List<int>> bookmarkList = ValueNotifier([]);
+
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  void bookmark(int id) {
+    if (!bookmarkList.value.remove(id)) bookmarkList.value.add(id);
+    prefs.setString(_bookmarksKey, jsonEncode(bookmarkList.value));
+    bookmarkList.value = List.of(bookmarkList.value);
+  }
 
   Future<List<JobModel>> loadJobList(
     BuildContext context, {
@@ -29,11 +52,9 @@ class AppCtrl {
       ),
     );
 
-    final body = jsonDecode(res.body);
-
     if (res.statusCode == 200) {
       print('조회 성공');
-      return (body['data']['items'] as List)
+      return (jsonDecode(res.body)['data']['items'] as List)
           .map((e) => JobModel.fromJson(e))
           .toList();
     }

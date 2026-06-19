@@ -1,4 +1,3 @@
-import 'package:hire_up_poc_1/main.dart';
 
 class JobModel {
   final int id;

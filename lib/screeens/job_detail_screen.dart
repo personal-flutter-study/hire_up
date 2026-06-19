@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
 
 class JobDetailScreen extends StatefulWidget {
   const JobDetailScreen({super.key});
@@ -10,6 +11,6 @@ class JobDetailScreen extends StatefulWidget {
 class _JobDetailScreenState extends State<JobDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return BaseScaffold(child: Column());
   }
 }

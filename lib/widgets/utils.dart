@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -62,7 +61,7 @@ enum AppIcon {
     'assets/icons/$p',
     fit: .fitWidth,
     width: size,
-    color: color,
+    color: color ?? grey,
   );
 }
 
@@ -125,18 +124,78 @@ extension QT on TextStyle {
   TextStyle get cg => copyWith(color: grey);
 }
 
+extension QB on ButtonStyle {
+  ButtonStyle get min => copyWith(
+    tapTargetSize: .shrinkWrap,
+    minimumSize: .all(.zero),
+    padding: .all(.zero),
+  );
+}
+
 extension QC on BuildContext {
   NavigatorState go(Widget page) =>
       Navigator.of(this)..push(MaterialPageRoute(builder: (context) => page));
+
+  NavigatorState back() => Navigator.of(this)..pop();
 }
 
 extension QS on String {
-  void snack(BuildContext context) =>
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(this)));
+  void snack(context) => ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(this),
+      backgroundColor: blue,
+      duration: Duration(milliseconds: 600),
+    ),
+  );
+
+  Widget text(TextStyle style) => Text(this);
 }
 
-extension QD on num {
-  SizedBox get wW => SizedBox(width: toDouble());
+extension QN on num {
+  SizedBox get sw => SizedBox(width: toDouble());
 
-  SizedBox get hW => SizedBox(height: toDouble());
+  SizedBox get sh => SizedBox(height: toDouble());
+
+  Padding ph(Widget child) => Padding(
+    padding: .symmetric(vertical: toDouble()),
+    child: child,
+  );
+
+  Padding pw(Widget child) => Padding(
+    padding: .symmetric(horizontal: toDouble()),
+    child: child,
+  );
+
+  Padding pa(Widget child) => Padding(padding: .all(toDouble()), child: child);
+}
+
+class AppButton {
+  AppButton._();
+
+  static ElevatedButton outline(String m, VoidCallback tap) => ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: .circular(12),
+        side: BorderSide(color: blue, width: 2),
+      ),
+      padding: .symmetric(vertical: 12),
+    ),
+    onPressed: tap,
+    child: Text(m, style: TextStyle().b16.cb),
+  );
+
+  static ElevatedButton primary(
+    String m,
+    VoidCallback tap, {
+    double? padding,
+  }) => ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: .circular(12)),
+      backgroundColor: blue,
+      padding: .symmetric(vertical: 12, horizontal: padding ?? 0),
+    ),
+    onPressed: tap,
+    child: Text(m, style: TextStyle(color: Colors.white).b16),
+  );
 }
