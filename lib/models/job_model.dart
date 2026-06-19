@@ -1,3 +1,4 @@
+import 'package:hire_up_poc_1/models/rmd_job_model.dart';
 
 class JobModel {
   final int id;

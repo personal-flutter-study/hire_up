@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hire_up_poc_1/screeens/ai_interview_choose_screen.dart';
 import 'package:hire_up_poc_1/screeens/home_screen.dart';
 import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
 
@@ -13,7 +14,12 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
-  final List<Widget> pages = [HomeScreen(), SizedBox(), SizedBox(), SizedBox()];
+  final List<Widget> pages = [
+    HomeScreen(),
+    AiInterviewChooseScreen(),
+    SizedBox(),
+    SizedBox(),
+  ];
   int page = 0;
 
   @override

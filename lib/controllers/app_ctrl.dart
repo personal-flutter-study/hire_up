@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:hire_up_poc_1/main.dart';
 import 'package:hire_up_poc_1/models/job_model.dart';
+import 'package:hire_up_poc_1/models/rmd_job_model.dart';
 import 'package:hire_up_poc_1/models/user_model.dart';
 import 'package:hire_up_poc_1/widgets/utils.dart';
 import 'package:http/http.dart';
@@ -60,6 +61,26 @@ class AppCtrl {
     }
 
     '조회 서버 통신 오류'.snack(context);
+
+    return [];
+  }
+
+  Future<List<RmdJobModel>> loadRmdJobList(
+    BuildContext context, {
+    Sort? sort,
+    CateGory? cate,
+    String? keyword,
+  }) async {
+    final res = await get(Uri.parse('$baseUrl/jobs/recommended'));
+
+    if (res.statusCode == 200) {
+      print('오늘의 추천 공고 조회 성공');
+      return (jsonDecode(res.body)['data']['items'] as List)
+          .map((e) => RmdJobModel.fromJson(e))
+          .toList();
+    }
+
+    '오늘의 추천 공고 조회 서버 통신 오류'.snack(context);
 
     return [];
   }

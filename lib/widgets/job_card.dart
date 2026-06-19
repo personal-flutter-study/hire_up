@@ -19,7 +19,7 @@ class JobCard extends StatelessWidget {
       onTap:
           tap ??
           () {
-            context.go(JobDetailScreen());
+            context.go(JobDetailScreen(id: model.id));
           },
       child: Container(
         width: .maxFinite,

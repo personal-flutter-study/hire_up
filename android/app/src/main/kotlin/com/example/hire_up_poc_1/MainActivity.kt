@@ -1,6 +1,8 @@
 package com.example.hire_up_poc_1
 
 import android.Manifest
+import android.content.Intent
+import android.content.Intent.ACTION_SEND
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Telephony
@@ -67,12 +69,38 @@ class MainActivity : FlutterActivity(), MethodChannel.MethodCallHandler {
             "sms" -> {
                 readSMS()
             }
+
+            "share" -> {
+
+                val text = p0.argument<String>("text")
+                if (text == null) {
+                    result?.success(false)
+                    return
+                }
+                shareText(text)
+                result?.success(true)
+
+            }
+
+
         }
 
 
         result?.notImplemented()
 
 
+    }
+
+
+    fun shareText(text: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
     }
 
 

@@ -12,9 +12,7 @@ import 'package:http/http.dart';
 import '../models/user_model.dart';
 
 class LoginBottomSheet extends StatefulWidget {
-  const LoginBottomSheet({super.key, this.onClose});
-
-  final VoidCallback? onClose;
+  const LoginBottomSheet({super.key});
 
   Future<void> show(BuildContext context) => showModalBottomSheet(
     enableDrag: true,
