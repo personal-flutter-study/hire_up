@@ -1,19 +1,37 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hire_up_poc_1/main.dart';
 import 'package:hire_up_poc_1/screeens/ai_interview_history_screen.dart';
 import 'package:hire_up_poc_1/screeens/ai_interview_screen.dart';
 import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
 import 'package:hire_up_poc_1/widgets/utils.dart';
+import 'package:http/http.dart';
 
-final _interviewCtrl = InterviewCtrl();
+import '../models/question_model.dart';
+
+final interviewCtrl = InterviewCtrl();
 
 class InterviewCtrl {
-  Field? field;
+  JobRole? jobRole;
   Career? career;
-  final ValueNotifier<InterViewType> interViewType = ValueNotifier(.general);
 
-  void interview(BuildContext context) {
-    if (field == null) {
+  final ValueNotifier<InterViewType> type = ValueNotifier(.general);
+
+  final ValueNotifier<List<QuestionModel>> questions = ValueNotifier([]);
+  int total = 0;
+  final ValueNotifier<int> index = ValueNotifier(0);
+  int sec = 0;
+
+  QuestionModel get question => questions.value[index.value];
+
+  void next() {
+    index.value = min(index.value + 1, total - 1);
+  }
+
+  Future<void> interview(BuildContext context) async {
+    if (jobRole == null) {
       '직무를 선택해 주세요'.snack(context);
       return;
     }
@@ -22,7 +40,39 @@ class InterviewCtrl {
       return;
     }
 
-    context.go(AiInterviewScreen(interviewCtrl: this));
+    index.value = 0;
+    sec = 0;
+
+    await loadQuestionList();
+
+    context.go(AiInterviewScreen());
+  }
+
+  Future<bool> loadQuestionList() async {
+    try {
+      final res = await get(
+        Uri.parse('$baseUrl/interview/questions').replace(
+          queryParameters: {
+            'jobRole': jobRole?.value,
+            'career': career?.value,
+            'type': type.value.value,
+          }..removeWhere((key, value) => value == null),
+        ),
+      );
+
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body);
+        total = body['data']['total'];
+        questions.value = (body['data']['questions'] as List)
+            .map((e) => QuestionModel.fromJson(e))
+            .toList();
+        return true;
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return false;
   }
 }
 
@@ -48,7 +98,7 @@ class AiInterviewChooseScreen extends StatelessWidget {
                     1.sh,
 
                     _card,
-                    _FieldSection(),
+                    _JobRoleSection(),
                     _CareerSection(),
                     _InterviewSection(),
 
@@ -63,7 +113,7 @@ class AiInterviewChooseScreen extends StatelessWidget {
                         padding: .symmetric(vertical: 16),
                       ),
                       onPressed: () {
-                        _interviewCtrl.interview(context);
+                        interviewCtrl.interview(context);
                       },
                       child: Row(
                         spacing: 12,
@@ -113,14 +163,14 @@ class AiInterviewChooseScreen extends StatelessWidget {
   }
 }
 
-class _FieldSection extends StatefulWidget {
-  const _FieldSection({super.key});
+class _JobRoleSection extends StatefulWidget {
+  const _JobRoleSection({super.key});
 
   @override
-  State<_FieldSection> createState() => _FieldSectionState();
+  State<_JobRoleSection> createState() => _JobRoleSectionState();
 }
 
-class _FieldSectionState extends State<_FieldSection> {
+class _JobRoleSectionState extends State<_JobRoleSection> {
   @override
   Widget build(BuildContext context) {
     return _section(
@@ -135,18 +185,18 @@ class _FieldSectionState extends State<_FieldSection> {
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
         ),
-        children: Field.values
+        children: JobRole.values
             .map(
               (e) => GestureDetector(
                 onTap: () {
                   setState(() {
-                    _interviewCtrl.field = e;
+                    interviewCtrl.jobRole = e;
                   });
                 },
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: _interviewCtrl.field == e
+                    border: interviewCtrl.jobRole == e
                         ? .all(color: blue)
                         : null,
                     borderRadius: .circular(12),
@@ -157,11 +207,11 @@ class _FieldSectionState extends State<_FieldSection> {
                     spacing: 4,
                     children: [
                       e.icon.icon(
-                        color: _interviewCtrl.field == e ? blue : grey,
+                        color: interviewCtrl.jobRole == e ? blue : grey,
                       ),
                       e.label.text(
                         TextStyle(
-                          color: _interviewCtrl.field == e
+                          color: interviewCtrl.jobRole == e
                               ? Colors.black
                               : grey,
                         ).b14,
@@ -199,18 +249,18 @@ class _CareerSectionState extends State<_CareerSection> {
                 (e) => GestureDetector(
                   onTap: () {
                     setState(() {
-                      _interviewCtrl.career = e;
+                      interviewCtrl.career = e;
                     });
                   },
                   child: Chip(
                     shape: RoundedRectangleBorder(borderRadius: .circular(32)),
                     padding: .all(12),
                     color: .all(
-                      _interviewCtrl.career == e ? blue : Colors.white,
+                      interviewCtrl.career == e ? blue : Colors.white,
                     ),
                     label: e.label.text(
                       TextStyle(
-                        color: _interviewCtrl.career == e
+                        color: interviewCtrl.career == e
                             ? Colors.white
                             : Colors.black,
                       ).b14,
@@ -247,7 +297,7 @@ class _InterviewSectionState extends State<_InterviewSection> {
         ),
         12.ph('특정 주제의 면접을 선택하면 더 맞춤형 질문을 제공해요.'.text(.new().b14.cg)),
         ValueListenableBuilder(
-          valueListenable: _interviewCtrl.interViewType,
+          valueListenable: interviewCtrl.type,
           builder: (context, value, child) => GestureDetector(
             onTap: () async {
               _InterviewBottomSheet().show(context);
@@ -357,13 +407,13 @@ class _InterviewBottomSheet extends StatelessWidget {
   }
 
   Widget _line(InterViewType type) {
-    final color = type == _interviewCtrl.interViewType.value ? blue : grey;
+    final color = type == interviewCtrl.type.value ? blue : grey;
     return Builder(
       builder: (context) {
         return GestureDetector(
           behavior: .opaque,
           onTap: () {
-            _interviewCtrl.interViewType.value = type;
+            interviewCtrl.type.value = type;
             context.back();
           },
           child: Row(

@@ -85,53 +85,72 @@ enum RecruitStatus {
   const RecruitStatus(this.value, this.label, this.color);
 }
 
-enum Field {
-  front('프론트엔드•개발자', icon: Icons.code),
-  back('백엔드•개발자', icon: Icons.layers),
-  design('UI/UI 디자이너', icon: Icons.brush),
-  mobile('모바일 앱 개발자', icon: Icons.phone_android),
-  data('데이터 분석가', icon: Icons.bar_chart_outlined),
-  pm('가확자/PM', icon: Icons.lightbulb);
+enum JobRole {
+  front('FRONTEND', '프론트엔드•개발자', icon: Icons.code),
+  back('BACKEND', '백엔드•개발자', icon: Icons.layers),
+  design('DESIGN', 'UI/UI 디자이너', icon: Icons.brush),
+  mobile('APP', '모바일 앱 개발자', icon: Icons.phone_android),
+  data('DATA', '데이터 분석가', icon: Icons.bar_chart_outlined),
+  pm('PM', '가확자/PM', icon: Icons.lightbulb);
 
+  final String value;
   final String label;
   final IconData icon;
 
-  const Field(this.label, {required this.icon});
+  const JobRole(this.value, this.label, {required this.icon});
 }
 
 enum Career {
-  newer('신입 0~1년'),
-  junior('주니어 2~3년'),
-  middle('미들 4~7년'),
-  senior('시니어 8년+');
+  newer('NEW', '신입 0~1년'),
+  junior('JUNIOR', '주니어 2~3년'),
+  middle('MIDDLE', '미들 4~7년'),
+  senior('SENIOR', '시니어 8년+');
 
+  final String value;
   final String label;
 
-  const Career(this.label);
+  const Career(this.value, this.label);
 }
 
 enum InterViewType {
   general(
+    'GENERAL',
     '일반 면접',
     icon: Icons.wechat_outlined,
     description: '직무 및 인성 관련 종합 질문',
   ),
-  real('실무 면접', icon: Icons.work_outline, description: '직무 관련 기술 및 경험 질문'),
+  real(
+    'PRACTICAL',
+    '실무 면접',
+    icon: Icons.work_outline,
+    description: '직무 관련 기술 및 경험 질문',
+  ),
   mind(
+    'PERSONALITY',
     '인성 면접',
     icon: Icons.person_outline,
     description: '인성, 가치관, 조직문화 적합성 질문',
   );
 
+  final String value;
   final String label;
   final String description;
   final IconData icon;
 
   const InterViewType(
+    this.value,
     this.label, {
     required this.icon,
     required this.description,
   });
+}
+
+extension QD on Duration {
+  String get toMMSS {
+    final m = inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
 }
 
 extension QT on TextStyle {

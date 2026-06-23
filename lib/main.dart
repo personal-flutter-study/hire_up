@@ -11,7 +11,7 @@ void main() async {
   runApp(MaterialApp(home: BaseScreen()));
 }
 
-const String baseUrl = 'http://10.0.2.2:3000';
+const String baseUrl = 'http://10.0.2.2:8000';
 
 const Color blue = Color(0xff3162F4);
 const Color grey = Color(0xff959595);
@@ -22,3 +22,4 @@ const Color greenL = Color(0xffE0F0EA);
 
 late final SharedPreferences prefs;
 final platformM = MethodChannel('com.example.hire_up_poc_1_m');
+final platformE = EventChannel('com.example.hire_up_poc_1_e');
