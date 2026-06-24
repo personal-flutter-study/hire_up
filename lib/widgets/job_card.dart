@@ -17,7 +17,7 @@ class JobCard extends StatelessWidget {
       onTap:
           tap ??
           () {
-            context.push(JobDetailScreen());
+            context.push(JobDetailScreen(id: model.id));
           },
       child: Card(
         color: Colors.white,

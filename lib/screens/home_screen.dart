@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hire_up_poc_3/app_ctrl.dart';
 import 'package:hire_up_poc_3/screens/job_book_screen.dart';
+import 'package:hire_up_poc_3/screens/job_recommend_screen.dart';
 import 'package:hire_up_poc_3/screens/search_screen.dart';
 import 'package:hire_up_poc_3/utils.dart';
 import 'package:hire_up_poc_3/widgets/base_scaffold.dart';
-import 'package:hire_up_poc_3/widgets/bookmark_button.dart';
 import 'package:hire_up_poc_3/widgets/job_card.dart';
 import 'package:hire_up_poc_3/widgets/search_field.dart';
+
+import '../widgets/job_card2.dart';
+
+enum RecruitStatus {
+  OPEN('OPEN', '채용중', Color(0xff3366FF)),
+  CLOSING('CLOSING', '마감임박', Color(0xffFF9500)),
+  CLOSED('CLOSED', '마감', Color(0xff999999));
+
+  final String value;
+  final String lebel;
+  final Color color;
+
+  const RecruitStatus(this.value, this.lebel, this.color);
+}
 
 enum Category {
   HR('HR', '전체'),
@@ -147,6 +161,52 @@ class _BodyState extends State<_Body> {
         ),
 
         24.sh,
+
+        18.pw(
+          child: Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              '오늘의 추천 공고 ✨'.text(.new().b24),
+
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context.push(JobRecommendScreen());
+                    },
+                    child: Row(
+                      mainAxisSize: .min,
+                      children: [
+                        '더보기'.text(.new().b14.cg),
+
+                        Icons.arrow_forward_ios.icon(color: grey),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        SingleChildScrollView(
+          padding: .symmetric(horizontal: 18),
+          scrollDirection: .horizontal,
+          child: FutureBuilder(
+            future: appCtrl.loadRecommendJobList(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == .waiting)
+                return Center(child: CircularProgressIndicator());
+
+              return Row(
+                spacing: 12,
+                children: (snapshot.data ?? [])
+                    .map((e) => JobCard2(model: e))
+                    .toList(),
+              );
+            },
+          ),
+        ),
 
         Expanded(
           child: 18.pw(

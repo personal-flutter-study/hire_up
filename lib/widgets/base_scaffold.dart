@@ -16,6 +16,7 @@ class BaseScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: bottomNavigationBar,
         appBar: appBar,
         body: child,

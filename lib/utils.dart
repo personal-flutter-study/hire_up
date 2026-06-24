@@ -31,7 +31,8 @@ extension QT on TextStyle {
 }
 
 extension QS on String {
-  Text text([TextStyle? style]) => Text(this, style: style);
+  Text text([TextStyle? style, TextAlign? align]) =>
+      Text(this, style: style, textAlign: align);
 
   Image image([double? size]) => Image.asset(this, fit: .fitWidth, width: size);
 

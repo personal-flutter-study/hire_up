@@ -199,7 +199,7 @@ class _ResultPage extends StatelessWidget {
                 .map(
                   (model) => GestureDetector(
                     onTap: () {
-                      context.push(JobDetailScreen());
+                      context.push(JobDetailScreen(id: model.id));
                     },
                     child: Card(
                       color: Colors.white,

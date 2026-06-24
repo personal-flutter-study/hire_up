@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hire_up_poc_3/screens/home_screen.dart';
+import 'package:hire_up_poc_3/screens/interview_choose_screen.dart';
 import 'package:hire_up_poc_3/utils.dart';
 import 'package:hire_up_poc_3/widgets/base_scaffold.dart';
 
@@ -11,7 +12,12 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
-  final List<Widget> pages = [HomeScreen(), SizedBox(), SizedBox(), SizedBox()];
+  final List<Widget> pages = [
+    HomeScreen(),
+    InterviewChooseScreen(),
+    SizedBox(),
+    SizedBox(),
+  ];
 
   int page = 0;
 
