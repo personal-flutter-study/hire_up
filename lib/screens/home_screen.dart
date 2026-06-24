@@ -56,63 +56,65 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      child: ValueListenableBuilder(
-        valueListenable: appCtrl.user,
-        builder: (context, value, child) => Column(
-          children: [
-            18.pw(
-              child: Column(
-                children: [
-                  18.ph(
-                    child: Row(
-                      mainAxisAlignment: .spaceBetween,
-                      children: [
-                        'assets/images/app_icon.png'.image(120),
-                        IconButton(
-                          onPressed: () {
-                            context.push(JobBookScreen());
-                          },
-                          icon: Icons.bookmark_border_outlined.icon(
-                            size: 38,
-                            color: grey,
+      child: SingleChildScrollView(
+        child: ValueListenableBuilder(
+          valueListenable: appCtrl.user,
+          builder: (context, value, child) => Column(
+            children: [
+              18.pw(
+                child: Column(
+                  children: [
+                    18.ph(
+                      child: Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          'assets/images/app_icon.png'.image(120),
+                          IconButton(
+                            onPressed: () {
+                              context.push(JobBookScreen());
+                            },
+                            icon: Icons.bookmark_border_outlined.icon(
+                              size: 38,
+                              color: grey,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Row(
-                    children: [
-                      '안녕하세요, '.text(.new().b16.cg),
-                      '${value?.name ?? '게스트'}님!'.text(.new().b16.cb),
-                    ],
-                  ),
-
-                  Row(
-                    children: [
-                      '새로운 기회'.text(.new().b18.cb),
-                      '를 찾아보세요.'.text(.new().b18),
-                    ],
-                  ),
-
-                  18.ph(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.push(SearchScreen());
-                      },
-                      child: SearchField(
-                        p: Icons.search.icon(color: grey),
-                        h: '직무, 회사, 키워드 검색',
-                        enable: false,
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
 
-            Expanded(child: _Body()),
-          ],
+                    Row(
+                      children: [
+                        '안녕하세요, '.text(.new().b16.cg),
+                        '${value?.name ?? '게스트'}님!'.text(.new().b16.cb),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        '새로운 기회'.text(.new().b18.cb),
+                        '를 찾아보세요.'.text(.new().b18),
+                      ],
+                    ),
+
+                    18.ph(
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push(SearchScreen());
+                        },
+                        child: SearchField(
+                          p: Icons.search.icon(color: grey),
+                          h: '직무, 회사, 키워드 검색',
+                          enable: false,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              _Body(),
+            ],
+          ),
         ),
       ),
     );
@@ -189,6 +191,8 @@ class _BodyState extends State<_Body> {
           ),
         ),
 
+        18.sh,
+
         SingleChildScrollView(
           padding: .symmetric(horizontal: 18),
           scrollDirection: .horizontal,
@@ -208,64 +212,60 @@ class _BodyState extends State<_Body> {
           ),
         ),
 
-        Expanded(
-          child: 18.pw(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    '전체 공고'.text(.new().b24),
+        24.sh,
 
-                    PopupMenuButton(
-                      onSelected: (value) {
-                        setState(() {
-                          sort = value;
-                        });
-                      },
-                      itemBuilder: (context) => Sort.values
-                          .map(
-                            (e) => PopupMenuItem(
-                              value: e,
-                              child: e.label.text(.new().b16),
-                            ),
-                          )
-                          .toList(),
-                      child: Row(
-                        children: [
-                          sort.label.text(.new().b16.cg),
-                          Icons.keyboard_arrow_down.icon(color: grey, size: 24),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+        18.pw(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  '전체 공고'.text(.new().b24),
 
-                18.sh,
-
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: FutureBuilder(
-                      future: appCtrl.loadJobList(
-                        context,
-                        sort: sort,
-                        category: category,
-                      ),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == .waiting)
-                          return Center(child: CircularProgressIndicator());
-
-                        return Column(
-                          children: (snapshot.data ?? [])
-                              .map((e) => JobCard(model: e))
-                              .toList(),
-                        );
-                      },
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      setState(() {
+                        sort = value;
+                      });
+                    },
+                    itemBuilder: (context) => Sort.values
+                        .map(
+                          (e) => PopupMenuItem(
+                            value: e,
+                            child: e.label.text(.new().b16),
+                          ),
+                        )
+                        .toList(),
+                    child: Row(
+                      children: [
+                        sort.label.text(.new().b16.cg),
+                        Icons.keyboard_arrow_down.icon(color: grey, size: 24),
+                      ],
                     ),
                   ),
+                ],
+              ),
+
+              18.sh,
+
+              FutureBuilder(
+                future: appCtrl.loadJobList(
+                  context,
+                  sort: sort,
+                  category: category,
                 ),
-              ],
-            ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == .waiting)
+                    return Center(child: CircularProgressIndicator());
+
+                  return Column(
+                    children: (snapshot.data ?? [])
+                        .map((e) => JobCard(model: e))
+                        .toList(),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ],
