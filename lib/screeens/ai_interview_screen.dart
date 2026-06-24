@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hire_up_poc_1/controllers/app_ctrl.dart';
 import 'package:hire_up_poc_1/main.dart';
+import 'package:hire_up_poc_1/models/interview_model.dart';
 import 'package:hire_up_poc_1/models/question_model.dart';
 import 'package:hire_up_poc_1/screeens/ai_interview_choose_screen.dart';
 import 'package:hire_up_poc_1/widgets/base_scaffold.dart';
@@ -29,6 +31,13 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BaseScaffold(
       color: Colors.white,
@@ -50,9 +59,59 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                       Expanded(
                         child: Center(child: 'AI 모의 면접'.text(.new().b18)),
                       ),
-                      Card(
-                        color: Colors.white,
-                        child: 8.pa('면접 종료'.text(.new().b16)),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => SimpleDialog(
+                              backgroundColor: Colors.white,
+                              title: '면접 종료'.text(.new().b24),
+                              contentPadding: .symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              children: [
+                                '면접을 종료하시겠습니까?\n녹음된 내용은 저장됩니다.'.text(
+                                  .new().b14,
+                                ),
+
+                                12.sh,
+
+                                Row(
+                                  mainAxisAlignment: .end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        context.back();
+                                      },
+                                      child: '취소'.text(.new().b14),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        appCtrl.saveInterview(
+                                          InterviewModel(
+                                            type:
+                                                interviewCtrl.type.value.label,
+                                            sec: interviewCtrl.sec,
+                                            date: DateTime.now(),
+                                          ),
+                                        );
+                                        context.back().pop();
+                                      },
+                                      child: '종료'.text(
+                                        TextStyle(color: Colors.redAccent).b14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          child: 8.pa('면접 종료'.text(.new().b16)),
+                        ),
                       ),
                     ],
                   ),
@@ -64,7 +123,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                   Row(
                     spacing: 18,
                     children: [
-                      '질문 ${interviewCtrl.index.value} / ${interviewCtrl.total}'
+                      '질문 ${interviewCtrl.index.value + 1} / ${interviewCtrl.total}'
                           .text(.new().b14.cg),
                       Expanded(
                         child: Container(
@@ -76,7 +135,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                           child: FractionallySizedBox(
                             alignment: .centerLeft,
                             widthFactor:
-                                (interviewCtrl.index.value /
+                                ((interviewCtrl.index.value + 1) /
                                         interviewCtrl.total)
                                     .clamp(0, 1.0),
                             child: Container(
@@ -169,11 +228,12 @@ class _BodyState extends State<_Body> {
                       Center(
                         child: Transform.translate(
                           offset: .new(0, 10),
-                          child: switch (progress) {
-                            > .2 => AppImg.lv0_mouth_closed.image(size: 20),
-                            > .4 => AppImg.lv1_mouth_small.image(size: 20),
-                            > .6 => AppImg.lv2_mouth_medium.image(size: 20),
-                            > .8 => AppImg.lv3_mouth_large.image(size: 20),
+                          child: switch (_wave[(progress * (_wave.length - 1))
+                              .toInt()]) {
+                            < .2 => AppImg.lv0_mouth_closed.image(size: 20),
+                            < .4 => AppImg.lv1_mouth_small.image(size: 20),
+                            < .6 => AppImg.lv2_mouth_medium.image(size: 20),
+                            < .8 => AppImg.lv3_mouth_large.image(size: 20),
                             _ => AppImg.lv0_mouth_closed.image(size: 20),
                           },
                         ),
@@ -212,19 +272,68 @@ class _BodyState extends State<_Body> {
             padding: .symmetric(vertical: 16, horizontal: 0),
           ),
           onPressed: () {
-            interviewCtrl.next();
+            if (interviewCtrl.index.value >= interviewCtrl.total - 1) {
+              appCtrl.saveInterview(
+                InterviewModel(
+                  type: interviewCtrl.type.value.label,
+                  date: DateTime.now(),
+                  sec: interviewCtrl.sec,
+                ),
+              );
+              print(interviewCtrl.index.value >= interviewCtrl.total);
+              showDialog(
+                context: context,
+                builder: (context) => SimpleDialog(
+                  backgroundColor: Colors.white,
+                  contentPadding: .symmetric(horizontal: 24, vertical: 12),
+                  title: Row(
+                    spacing: 8,
+                    children: [
+                      Icons.check_circle_outline.icon(color: green, size: 24),
+                      '면접 완료'.text(.new().b24),
+                    ],
+                  ),
+                  children: [
+                    '${interviewCtrl.total}개의 질문에 답변하셨습니다.'.text(.new().b14),
+
+                    Row(
+                      children: [
+                        Icons.mic.icon(color: green, size: 24),
+                        '녹음이 저장되었습니다.'.text(.new().b14),
+                      ],
+                    ),
+
+                    12.sh,
+
+                    Row(
+                      mainAxisAlignment: .end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            context.back().pop();
+                          },
+                          child: '확인'.text(.new().b14.cb),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              interviewCtrl.next();
+            }
           },
           child: Row(
             mainAxisAlignment: .center,
             spacing: 8,
             children: [
               Text(
-                interviewCtrl.index.value >= interviewCtrl.total
+                interviewCtrl.index.value >= interviewCtrl.total - 1
                     ? '면접 완료'
                     : '다음 질문',
                 style: TextStyle(color: Colors.white).b16,
               ),
-              if (interviewCtrl.index.value >= interviewCtrl.total - 1)
+              if (interviewCtrl.index.value < interviewCtrl.total - 1)
                 Icons.arrow_forward.icon(color: Colors.white),
             ],
           ),
@@ -261,7 +370,7 @@ class _BodyState extends State<_Body> {
 
                   Spacer(),
 
-                  '${Duration(seconds: 0).toMMSS} / ${Duration(seconds: interviewCtrl.total).toMMSS}'
+                  '${videoPlayer.value.position.toMMSS} / ${videoPlayer.value.duration.toMMSS}'
                       .text(.new().b14.cg),
                 ],
               ),

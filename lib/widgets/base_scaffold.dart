@@ -21,7 +21,7 @@ class BaseScaffold extends StatelessWidget {
         appBar: appBar,
         resizeToAvoidBottomInset: false,
         body: child,
-        backgroundColor: color ?? Colors.white.withAlpha(200),
+        backgroundColor: color ?? Colors.white.withAlpha(240),
         bottomNavigationBar: navigationBar,
       ),
     );

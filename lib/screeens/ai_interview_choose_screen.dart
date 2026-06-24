@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -16,6 +17,7 @@ final interviewCtrl = InterviewCtrl();
 class InterviewCtrl {
   JobRole? jobRole;
   Career? career;
+
 
   final ValueNotifier<InterViewType> type = ValueNotifier(.general);
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hire_up_poc_1/main.dart';
+import 'package:hire_up_poc_1/models/interview_model.dart';
 import 'package:hire_up_poc_1/models/job_model.dart';
 import 'package:hire_up_poc_1/models/rmd_job_model.dart';
 import 'package:hire_up_poc_1/models/user_model.dart';
@@ -24,6 +25,7 @@ class AppCtrl {
 
   static const String tokenKey = '_tokenKey';
   static const String _bookmarksKey = '_bookmarksKey';
+  static const String _interviewKey = '_interviewHistoryKey';
 
   final ValueNotifier<List<int>> bookmarkList = ValueNotifier([]);
 
@@ -83,5 +85,26 @@ class AppCtrl {
     '오늘의 추천 공고 조회 서버 통신 오류'.snack(context);
 
     return [];
+  }
+
+  void saveInterview(InterviewModel model) {
+    final list = loadInterview();
+
+    list.add(model);
+
+    prefs.setStringList(
+      _interviewKey,
+      list.map((e) => jsonEncode(e.toJson())).toList(),
+    );
+
+    print('저장 성공');
+  }
+
+  List<InterviewModel> loadInterview() {
+    return prefs
+            .getStringList(_interviewKey)
+            ?.map((e) => InterviewModel.fromJson(jsonDecode(e)))
+            .toList() ??
+        [];
   }
 }
