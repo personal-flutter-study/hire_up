@@ -46,19 +46,19 @@ extension QN on num {
   Padding pa({required Widget child}) =>
       Padding(padding: .all(toDouble()), child: child);
 
-  Padding ph({required Widget child}) => Padding(
+  Padding pw({required Widget child}) => Padding(
     padding: .symmetric(horizontal: toDouble()),
     child: child,
   );
 
-  Padding pv({required Widget child}) => Padding(
+  Padding ph({required Widget child}) => Padding(
     padding: .symmetric(vertical: toDouble()),
     child: child,
   );
 
-  SizedBox get sv => SizedBox(height: toDouble());
+  SizedBox get sh => SizedBox(height: toDouble());
 
-  SizedBox get sh => SizedBox(width: toDouble());
+  SizedBox get sw => SizedBox(width: toDouble());
 }
 
 extension QI on IconData {

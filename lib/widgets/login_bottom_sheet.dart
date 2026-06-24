@@ -96,12 +96,12 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
               child: ['로그인'.text(.new().b16.cw)],
             ),
 
-            1.sv,
+            1.sh,
 
             Row(
               children: [
                 Expanded(child: Divider()),
-                12.ph(child: '또는'.text(.new().b14.cg)),
+                12.pw(child: '또는'.text(.new().b14.cg)),
                 Expanded(child: Divider()),
               ],
             ),

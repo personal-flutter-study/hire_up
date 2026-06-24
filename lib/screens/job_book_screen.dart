@@ -30,8 +30,8 @@ class _JobBookScreenState extends State<JobBookScreen> {
                   Icons.lock_outline.icon(size: 88, color: grey),
                   '로그인이 필요합니다'.text(.new().b18),
                   '로그인 후 관심 공고를 확인할 수 있어요'.text(.new().b16.cg),
-                  12.sv,
-                  100.ph(
+                  12.sh,
+                  100.pw(
                     child: PButton(
                       child: ['로그인'.text(.new().b16.cw)],
                       tap: () {
@@ -76,7 +76,7 @@ class _JobBookScreenState extends State<JobBookScreen> {
                     );
                   }
                   return SingleChildScrollView(
-                    child: 18.ph(
+                    child: 18.pw(
                       child: Column(
                         children: data.map((e) {
                           double x = 0;

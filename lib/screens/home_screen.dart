@@ -46,10 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
         valueListenable: appCtrl.user,
         builder: (context, value, child) => Column(
           children: [
-            18.ph(
+            18.pw(
               child: Column(
                 children: [
-                  18.pv(
+                  18.ph(
                     child: Row(
                       mainAxisAlignment: .spaceBetween,
                       children: [
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
-                  18.pv(
+                  18.ph(
                     child: GestureDetector(
                       onTap: () {
                         context.push(SearchScreen());
@@ -127,7 +127,7 @@ class _BodyState extends State<_Body> {
             children: Category.values.map((e) {
               final active = category == e;
 
-              return 12.ph(
+              return 12.pw(
                 child: FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: active ? blue : Colors.white,
@@ -146,10 +146,10 @@ class _BodyState extends State<_Body> {
           ),
         ),
 
-        24.sv,
+        24.sh,
 
         Expanded(
-          child: 18.ph(
+          child: 18.pw(
             child: Column(
               children: [
                 Row(
@@ -181,7 +181,7 @@ class _BodyState extends State<_Body> {
                   ],
                 ),
 
-                18.sv,
+                18.sh,
 
                 Expanded(
                   child: SingleChildScrollView(
