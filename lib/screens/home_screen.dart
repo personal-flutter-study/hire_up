@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BaseScaffold(
       child: SingleChildScrollView(
         child: ValueListenableBuilder(
-          valueListenable: appCtrl.user,
+          valueListenable: appCtrl.token,
           builder: (context, value, child) => Column(
             children: [
               18.pw(
@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       children: [
                         '안녕하세요, '.text(.new().b16.cg),
-                        '${value?.name ?? '게스트'}님!'.text(.new().b16.cb),
+                        '${appCtrl.user?.name ?? '게스트'}님!'.text(.new().b16.cb),
                       ],
                     ),
 

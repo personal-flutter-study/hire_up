@@ -12,7 +12,11 @@ void main() async {
   appCtrl.loadBookmarks();
   appCtrl.loadTags();
 
-  runApp(MaterialApp(home: BaseScreen()));
+  runApp(
+    MaterialApp(
+      home: BaseScreen(),
+    ),
+  );
 }
 
 late final SharedPreferences prefs;

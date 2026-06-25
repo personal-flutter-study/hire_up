@@ -280,7 +280,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
                                   "지원하기".text(.new().b16.cw),
                                 ],
                                 tap: () {
-                                  if (appCtrl.user.value == null) {
+                                  if (appCtrl.token.value == null) {
                                     LoginBottomSheet().show(context);
                                   } else {
                                     '지원 서비스는 준비중에 있습니다.'.snack(context);

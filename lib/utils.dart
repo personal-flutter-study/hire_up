@@ -18,6 +18,7 @@ extension QT on TextStyle {
   TextStyle get b16 => copyWith(fontWeight: .bold, fontSize: 16);
 
   TextStyle get b18 => copyWith(fontWeight: .bold, fontSize: 18);
+  TextStyle get b20 => copyWith(fontWeight: .bold, fontSize: 20);
 
   TextStyle get b24 => copyWith(fontWeight: .bold, fontSize: 24);
 

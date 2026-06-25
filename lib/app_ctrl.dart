@@ -12,28 +12,40 @@ import 'package:http/http.dart';
 final AppCtrl appCtrl = AppCtrl();
 
 class AppCtrl {
-  ValueNotifier<UserModel?> user = ValueNotifier(null);
+  ValueNotifier<int> page = ValueNotifier(0);
+
+  ValueNotifier<String?> token = ValueNotifier(null);
+
+  UserModel? user;
+
   final ValueNotifier<List<int>> bookmarks = ValueNotifier([]);
   final ValueNotifier<List<String>> localTags = ValueNotifier([]);
 
-  static const _bookmarksKey = '_bookmarksKey';
-  static const _tagsKey = '_tagsKey';
+  static const bookmarksKey = '_bookmarksKey';
+  static const tagsKey = '_tagsKey';
+  static const profileKey = '_profileKey';
 
   void bookmark(int id) {
     final list = loadBookmarks();
     if (!list.remove(id)) list.add(id);
-    prefs.setStringList(_bookmarksKey, list.map((e) => e.toString()).toList());
+    prefs.setStringList(bookmarksKey, list.map((e) => e.toString()).toList());
     bookmarks.value = list;
   }
 
   List<int> loadBookmarks() {
     final list =
-        prefs.getStringList(_bookmarksKey)?.map((e) => int.parse(e)).toList() ??
+        prefs.getStringList(bookmarksKey)?.map((e) => int.parse(e)).toList() ??
         [];
 
     bookmarks.value = list;
     return list;
   }
+
+  void saveProfile(String path) {
+    prefs.setString(profileKey, path);
+  }
+
+  String? get profilePath => prefs.getString(profileKey);
 
   void saveTag(String tag, {bool? remove, bool? removeAll}) {
     final list = loadTags();
@@ -48,12 +60,12 @@ class AppCtrl {
       list.clear();
     }
 
-    prefs.setStringList(_tagsKey, list);
+    prefs.setStringList(tagsKey, list);
     localTags.value = list;
   }
 
   List<String> loadTags() {
-    final list = prefs.getStringList(_tagsKey) ?? [];
+    final list = prefs.getStringList(tagsKey) ?? [];
 
     localTags.value = list;
     return list;
@@ -139,7 +151,11 @@ class AppCtrl {
 
       final body = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        user.value = UserModel.fromJson(body['data']['user']);
+        user = UserModel.fromJson(body['data']['user']);
+
+        token.value = body['data']['token'];
+        print(token.value);
+
         return true;
       } else {
         for (var e in (body['errors'] as List)) {

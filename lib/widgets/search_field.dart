@@ -13,8 +13,12 @@ class SearchField extends StatefulWidget {
     this.change,
     this.submit,
     this.label,
+    this.color,
+    this.alignment,
   });
 
+  final Color? color;
+  final CrossAxisAlignment? alignment;
   final TextEditingController? controller;
   final String? label;
   final String h;
@@ -43,15 +47,16 @@ class _SearchFieldState extends State<SearchField> {
     );
 
     return Column(
-      crossAxisAlignment: .start,
+      spacing: 8,
+      crossAxisAlignment: widget.alignment ?? .start,
       children: [
-        if (widget.label != null) widget.label!.text(.new().b14.cg),
+        if (widget.label != null) widget.label!.text(.new().b16.cg),
         Container(
           padding: .symmetric(horizontal: 12),
           margin: .all(1),
           decoration: BoxDecoration(
             borderRadius: .circular(12),
-            color: Colors.white,
+            color: widget.color ?? Colors.white,
             border: .all(color: grey.withAlpha(100), width: 2),
           ),
           child: TextField(

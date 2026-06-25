@@ -17,7 +17,7 @@ class BookmarkButton extends StatelessWidget {
 
         return IconButton(
           onPressed: () {
-            if (appCtrl.user.value == null) {
+            if (appCtrl.token.value == null) {
               LoginBottomSheet().show(context);
             } else {
               appCtrl.bookmark(id);

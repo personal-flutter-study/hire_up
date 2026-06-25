@@ -19,7 +19,7 @@ class _JobBookScreenState extends State<JobBookScreen> {
     return BaseScaffold(
       appBar: AppBar(title: '관심 공고'.text(.new().b18)),
       child: ValueListenableBuilder(
-        valueListenable: appCtrl.user,
+        valueListenable: appCtrl.token,
         builder: (context, value, child) {
           if (value == null) {
             return Center(
