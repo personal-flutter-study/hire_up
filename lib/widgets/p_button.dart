@@ -9,15 +9,15 @@ class PButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: .circular(12)),
-        padding: .symmetric(vertical: 16),
-        backgroundColor: blue,
-        alignment: .center,
-      ),
-      onPressed: tap,
-      child: Row(mainAxisAlignment: .center, children: child),
-    );
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: .circular(12)),
+      padding: .symmetric(vertical: 16),
+      backgroundColor: blue,
+      alignment: .center,
+    ),
+    onPressed: tap,
+    child: Row(mainAxisAlignment: .center, children: child),
+  );
   }
 }

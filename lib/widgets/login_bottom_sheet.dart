@@ -44,11 +44,13 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                 mainAxisAlignment: .spaceAround,
                 children: [
                   SearchField(
+                    key: Key('이메일: test@example.com'),
                     controller: email,
                     p: Icons.email_outlined.icon(color: grey),
                     h: '이메일을 입력해주세요',
                   ),
                   SearchField(
+                    key: Key('비밀번호: Test1234!'),
                     controller: password,
                     p: Icons.lock_outline.icon(color: grey),
                     h: '비밀번호를 입력해주세요',
@@ -83,6 +85,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
             ),
 
             PButton(
+              key: Key('정상 값으로 로그인 시도'),
               tap: () async {
                 if (await appCtrl.login(
                   context,

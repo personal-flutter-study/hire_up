@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 const Color blue = Color(0xff3366FF);
 const Color grey = Color(0xff858585);
 const String baseUri = 'http://10.0.2.2:8000';
-final Map<String, String> baseHeader = {'Content-Type': 'application/json'};
+
+Map<String, String> get baseHeader => {'Content-Type': 'application/json'};
 
 extension QB on BuildContext {
-  NavigatorState push(Widget page) =>
-      Navigator.of(this)..push(MaterialPageRoute(builder: (context) => page));
+  Future<dynamic> push(Widget page) =>
+      Navigator.of(this).push(MaterialPageRoute(builder: (context) => page));
 
   NavigatorState pop() => Navigator.of(this)..pop();
 }
@@ -18,6 +19,7 @@ extension QT on TextStyle {
   TextStyle get b16 => copyWith(fontWeight: .bold, fontSize: 16);
 
   TextStyle get b18 => copyWith(fontWeight: .bold, fontSize: 18);
+
   TextStyle get b20 => copyWith(fontWeight: .bold, fontSize: 20);
 
   TextStyle get b24 => copyWith(fontWeight: .bold, fontSize: 24);

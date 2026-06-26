@@ -60,6 +60,7 @@ class _SearchFieldState extends State<SearchField> {
             border: .all(color: grey.withAlpha(100), width: 2),
           ),
           child: TextField(
+            key: widget.key,
             onSubmitted: widget.submit,
             onChanged: widget.change,
             enabled: widget.enable,

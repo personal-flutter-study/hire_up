@@ -1,11 +1,11 @@
 class ResumeDetailModel {
-  final String title;
-  final String jobRole;
-  final String oneLineIntro;
-  final String intro;
-  final educations;
-  final careers;
-  final projects;
+  String title;
+  String jobRole;
+  String oneLineIntro;
+  String intro;
+  final List<EducationModel> educations;
+  final List<CareerModel> careers;
+  final List<ProjectModel> projects;
   final List<String> skills;
 
   ResumeDetailModel({
@@ -24,11 +24,28 @@ class ResumeDetailModel {
     jobRole: json['jobRole'],
     oneLineIntro: json['oneLineIntro'],
     intro: json['intro'],
-    educations: json['educations'],
-    careers: json['careers'],
-    projects: json['projects'],
+    educations: (json['educations'] as List)
+        .map((e) => EducationModel.fromJson(e))
+        .toList(),
+    careers: (json['careers'] as List)
+        .map((e) => CareerModel.fromJson(e))
+        .toList(),
+    projects: (json['projects'] as List)
+        .map((e) => ProjectModel.fromJson(e))
+        .toList(),
     skills: List<String>.from(json['skills']),
   );
+
+  Map toJson() => {
+    'title': title,
+    'jobRole': jobRole,
+    'oneLineIntro': oneLineIntro,
+    'intro': intro,
+    'educations': educations.map((e) => e.toJson()).toList(),
+    'careers': careers.map((e) => e.toJson()).toList(),
+    'projects': projects.map((e) => e.toJson()).toList(),
+    'skills': skills,
+  };
 }
 
 class EducationModel {
@@ -54,7 +71,7 @@ class EducationModel {
     graduate: '',
   );
 
-  get toJson => {'schoolName': schoolName, 'major': major};
+  Map toJson() => {'schoolName': schoolName, 'major': major};
 }
 
 class CareerModel {
@@ -83,7 +100,7 @@ class CareerModel {
     description: json['description'],
   );
 
-  get toJson => {
+  Map toJson() => {
     'companyName': companyName,
     'position': position,
     'startDate': startDate,
@@ -113,11 +130,11 @@ class ProjectModel {
     techStack: List<String>.from(json['techStack']),
   );
 
-  get toJson => {
+  Map toJson() => {
     'name': name,
     'period': period,
     'description': description,
-    'techStack': techStack,
+    'techStack': techStack.map((e) => e.toString()).toList(),
   };
 }
 

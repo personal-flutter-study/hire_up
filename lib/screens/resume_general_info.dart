@@ -24,6 +24,7 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: Key('학력 영역 "추가" 버튼 클릭 S'),
       child: 18.pa(
         child: Column(
           spacing: 18,
@@ -57,13 +58,19 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                           spacing: 8,
                           crossAxisAlignment: .start,
                           children: [
-                            SearchField(label: '이름', color: greyL, h: ''),
+                            SearchField(
+                              key: Key('이름 입력 필드에 이름 입력'),
+                              label: '이름',
+                              color: greyL,
+                              h: '',
+                            ),
 
                             '직무'.text(.new().b16.cg),
                             PopupMenuButton(
+                              key: Key('직무 드롭다운에서 직무 선택'),
                               onSelected: (value) {
                                 setState(() {
-                                  resumeCtrl.jobRole = value;
+                                  resumeModel!.jobRole = value.label;
                                 });
                               },
                               color: Colors.white,
@@ -89,10 +96,7 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                                 child: 16.ph(
                                   child: Row(
                                     children: [
-                                      if (resumeCtrl.jobRole != null)
-                                        resumeCtrl.jobRole!.label.text(
-                                          .new().b14,
-                                        ),
+                                      resumeModel!.jobRole.text(.new().b14),
 
                                       Spacer(),
 
@@ -123,8 +127,16 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                           border: .all(color: grey.withAlpha(100), width: 2),
                         ),
                         child: TextField(
+                          key: Key('한 줄 소개 입력'),
                           maxLength: 50,
-                          controller: resumeCtrl.oneLineIntro,
+                          onChanged: (value) {
+                            setState(() {
+                              resumeModel!.oneLineIntro = value;
+                            });
+                          },
+                          controller: TextEditingController(
+                            text: resumeModel!.oneLineIntro,
+                          ),
                           decoration: InputDecoration(
                             border: .none,
                             contentPadding: .symmetric(vertical: 16),
@@ -189,6 +201,12 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                   border: .all(color: grey.withAlpha(100), width: 2),
                 ),
                 child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      resumeModel!.intro = value;
+                    });
+                  },
+                  controller: TextEditingController(text: resumeModel!.intro),
                   maxLength: 300,
                   maxLines: 5,
                   decoration: InputDecoration(
@@ -213,6 +231,7 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                         Spacer(),
 
                         TextButton(
+                          key: Key('학력 영역 "추가" 버튼 클릭'),
                           style: TextButton.styleFrom(
                             tapTargetSize: .shrinkWrap,
                             padding: .zero,
@@ -234,7 +253,7 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                       valueListenable: _ticker,
                       builder: (context, _, child) {
                         return Column(
-                          children: educations
+                          children: resumeModel!.educations
                               .map(
                                 (e) => Card(
                                   color: Colors.white,
@@ -255,8 +274,14 @@ class _ResumeGeneralInfoState extends State<ResumeGeneralInfo> {
                                         ),
 
                                         IconButton(
+                                          style: IconButton.styleFrom(
+                                            tapTargetSize: .shrinkWrap,
+                                            minimumSize: .zero,
+                                            padding: .zero,
+                                          ),
                                           onPressed: () {
-                                            educations.remove(e);
+                                            resumeModel!.educations.remove(e);
+                                            _ticker.value++;
                                           },
                                           icon: Icons.delete_outline.icon(
                                             color: Colors.red,
@@ -335,6 +360,7 @@ class _EducationBottomSheet extends StatelessWidget {
                   border: .all(color: grey.withAlpha(100), width: 2),
                 ),
                 child: TextField(
+                  key: Key('학교명: 한국대학교'),
                   controller: v1,
                   decoration: InputDecoration(
                     border: .none,
@@ -359,6 +385,7 @@ class _EducationBottomSheet extends StatelessWidget {
                   border: .all(color: grey.withAlpha(100), width: 2),
                 ),
                 child: TextField(
+                  key: Key('전공: 컴퓨터공학과'),
                   controller: v2,
                   decoration: InputDecoration(
                     border: .none,
@@ -455,14 +482,11 @@ class _EducationBottomSheet extends StatelessWidget {
 
           18.ph(
             child: PButton(
+              key: Key('학교명 입력 후 "저장" 버튼 클릭'),
               child: ['저장'.text(.new().b16.cw)],
               tap: () {
-                if (v1.text.isNotEmpty &&
-                    v2.text.isNotEmpty &&
-                    v3.text.isNotEmpty &&
-                    v4.text.isNotEmpty &&
-                    v5.text.isNotEmpty) {
-                  educations.add(
+                if (v1.text.isNotEmpty && v2.text.isNotEmpty) {
+                  resumeModel!.educations.add(
                     EducationModel(
                       schoolName: v1.text,
                       major: v2.text,

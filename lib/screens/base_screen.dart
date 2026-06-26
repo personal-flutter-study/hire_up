@@ -42,6 +42,7 @@ class BaseScreen extends StatelessWidget {
                 label: 'AI 면접',
               ),
               BottomNavigationBarItem(
+                key: Key('하단 네비게이션의 "이력서" 탭 클릭'),
                 icon: Icons.description_outlined.icon(size: 32),
                 label: '이력서',
               ),
